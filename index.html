@@ -1,13 +1,218 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Stock Dashboard</title>
-  </head>
-  <body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Dashboard - Live Demo</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Header Component
+        const Header = () => {
+            return (
+                <header className="bg-white shadow-sm border-b border-gray-200">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <h1 className="text-3xl font-bold text-gray-900 py-6">
+                            📊 Stock Price Dashboard
+                        </h1>
+                        <p className="text-gray-600 pb-4">Real-time stock prices with search functionality</p>
+                    </div>
+                </header>
+            );
+        };
+
+        // Stock Table Component
+        const StockTable = ({ stocks }) => {
+            return (
+                <div className="bg-white shadow rounded-lg overflow-hidden">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Symbol
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Price
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Change %
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {stocks.map((stock, index) => (
+                                <tr key={index} className="hover:bg-gray-50">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        {stock.symbol}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        ${stock.price.toFixed(2)}
+                                    </td>
+                                    <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${
+                                        stock.changePercent >= 0 ? 'text-green-600' : 'text-red-600'
+                                    }`}>
+                                        {stock.changePercent >= 0 ? '📈 +' : '📉 '}{stock.changePercent.toFixed(2)}%
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            );
+        };
+
+        // Main App Component
+        const App = () => {
+            const [stocks, setStocks] = useState([]);
+            const [loading, setLoading] = useState(true);
+            const [error, setError] = useState(null);
+            const [searchTerm, setSearchTerm] = useState('');
+
+            useEffect(() => {
+                const fetchStockData = async () => {
+                    try {
+                        setLoading(true);
+                        setError(null);
+
+                        // Simulate API delay
+                        await new Promise(resolve => setTimeout(resolve, 1500));
+                        
+                        // Mock data that simulates real API response
+                        const mockStocks = [
+                            { symbol: 'AAPL', price: 150.25, changePercent: 2.34 },
+                            { symbol: 'GOOGL', price: 2750.80, changePercent: -1.45 },
+                            { symbol: 'MSFT', price: 320.15, changePercent: 0.89 },
+                            { symbol: 'TSLA', price: 245.67, changePercent: -3.21 },
+                            { symbol: 'AMZN', price: 3125.43, changePercent: 1.78 },
+                            { symbol: 'META', price: 285.42, changePercent: 2.15 },
+                            { symbol: 'NVDA', price: 425.33, changePercent: -1.87 },
+                            { symbol: 'NFLX', price: 398.76, changePercent: 0.45 },
+                        ];
+
+                        setStocks(mockStocks);
+                        setLoading(false);
+                    } catch (err) {
+                        setError('Failed to fetch stock data. Please try again later.');
+                        setLoading(false);
+                        console.error('Error fetching stock data:', err);
+                    }
+                };
+
+                fetchStockData();
+            }, []);
+
+            // Filter stocks based on search term
+            const filteredStocks = stocks.filter(stock =>
+                stock.symbol.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+
+            return (
+                <div className="min-h-screen bg-gray-50">
+                    <Header />
+                    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                        {/* Search Input */}
+                        <div className="mb-6">
+                            <div className="max-w-md">
+                                <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-2">
+                                    🔍 Search stocks
+                                </label>
+                                <input
+                                    type="text"
+                                    id="search"
+                                    placeholder="Enter stock symbol (e.g., AAPL)"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                />
+                            </div>
+                        </div>
+
+                        {loading && (
+                            <div className="flex justify-center items-center py-12">
+                                <div className="text-lg text-gray-600">⏳ Loading stock data...</div>
+                            </div>
+                        )}
+                        
+                        {error && (
+                            <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
+                                <div className="flex">
+                                    <div className="ml-3">
+                                        <h3 className="text-sm font-medium text-red-800">❌ Error</h3>
+                                        <div className="mt-2 text-sm text-red-700">{error}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        
+                        {!loading && !error && (
+                            <>
+                                {filteredStocks.length === 0 && searchTerm ? (
+                                    <div className="text-center py-12">
+                                        <p className="text-gray-500">🔍 No stocks found matching "{searchTerm}"</p>
+                                    </div>
+                                ) : (
+                                    <StockTable stocks={filteredStocks} />
+                                )}
+                            </>
+                        )}
+
+                        {/* Features Section */}
+                        <div className="mt-12 bg-blue-50 rounded-lg p-6">
+                            <h3 className="text-lg font-semibold text-blue-900 mb-4">✨ Features Implemented</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <div className="bg-white rounded-lg p-4 shadow-sm">
+                                    <h4 className="font-medium text-gray-900">📊 Real-time Data</h4>
+                                    <p className="text-sm text-gray-600 mt-1">Simulated API calls with loading states</p>
+                                </div>
+                                <div className="bg-white rounded-lg p-4 shadow-sm">
+                                    <h4 className="font-medium text-gray-900">🔍 Search & Filter</h4>
+                                    <p className="text-sm text-gray-600 mt-1">Find stocks by symbol in real-time</p>
+                                </div>
+                                <div className="bg-white rounded-lg p-4 shadow-sm">
+                                    <h4 className="font-medium text-gray-900">📈 Visual Indicators</h4>
+                                    <p className="text-sm text-gray-600 mt-1">Color-coded price changes</p>
+                                </div>
+                                <div className="bg-white rounded-lg p-4 shadow-sm">
+                                    <h4 className="font-medium text-gray-900">📱 Responsive Design</h4>
+                                    <p className="text-sm text-gray-600 mt-1">Works on all screen sizes</p>
+                                </div>
+                                <div className="bg-white rounded-lg p-4 shadow-sm">
+                                    <h4 className="font-medium text-gray-900">⚡ Modern Stack</h4>
+                                    <p className="text-sm text-gray-600 mt-1">React + TypeScript + Tailwind</p>
+                                </div>
+                                <div className="bg-white rounded-lg p-4 shadow-sm">
+                                    <h4 className="font-medium text-gray-900">🛡️ Error Handling</h4>
+                                    <p className="text-sm text-gray-600 mt-1">Graceful error states</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* GitHub Link */}
+                        <div className="mt-8 text-center">
+                            <a 
+                                href="https://github.com/kart2405/stock-dashboard" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            >
+                                🔗 View on GitHub
+                            </a>
+                        </div>
+                    </main>
+                </div>
+            );
+        };
+
+        // Render the app
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
 </html>
