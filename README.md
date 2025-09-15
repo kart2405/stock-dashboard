@@ -62,7 +62,7 @@ Then open `http://localhost:8080/demo.html` in your browser.
 5. Open your browser and navigate to `http://localhost:5173`
 
 ## Project Structure
-
+    
 ```
 src/
 ├── components/
@@ -129,6 +129,17 @@ This project is automatically deployed to GitHub Pages using GitHub Actions. The
 - **Platform:** GitHub Pages
 - **URL:** `https://kart2405.github.io/stock-dashboard/`
 - **Build Status:** Automatically built and deployed via GitHub Actions
+
+### Custom Domain Setup
+
+To use your own domain name (e.g., `dashboard.yourname.com`):
+
+1. **Configure DNS**: Add a CNAME record pointing to `kart2405.github.io`
+2. **Update CNAME file**: Replace `your-domain.com` in the `CNAME` file with your actual domain
+3. **Update GitHub Pages**: Set your custom domain in repository settings
+4. **Enable HTTPS**: Check "Enforce HTTPS" in GitHub Pages settings
+
+📖 **Detailed Guide**: See [CUSTOM_DOMAIN_SETUP.md](./CUSTOM_DOMAIN_SETUP.md) for complete instructions.
 
 ### Manual Deployment
 
