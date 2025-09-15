@@ -114,4 +114,26 @@ const response = await axios.get(
 ## License
 
 This project is licensed under the ISC License.
-# stock-dashboard
+
+---
+
+## 🚀 Deployment
+
+This project is automatically deployed to GitHub Pages using GitHub Actions. The live demo is available at:
+
+**🌐 Live Demo:** [https://kart2405.github.io/stock-dashboard/](https://kart2405.github.io/stock-dashboard/)
+
+### Automatic Deployment
+
+- **Trigger:** Every push to the `main` branch
+- **Platform:** GitHub Pages
+- **URL:** `https://kart2405.github.io/stock-dashboard/`
+- **Build Status:** Automatically built and deployed via GitHub Actions
+
+### Manual Deployment
+
+If you want to deploy manually or to a different platform:
+
+1. Build the project: `npm run build`
+2. Deploy the `dist/` folder to your hosting provider
+3. For the demo version, simply upload `index.html` to any web server
